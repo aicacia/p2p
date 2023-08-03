@@ -1,20 +1,5 @@
 /**
- * @returns {string}
- */
-async function authenticateClient() {
-  const res = await fetch("http://localhost:4000/client", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id: "test", password: "password" }),
-  });
-  if (res.status >= 400) {
-    throw new Error("failed to authenticate");
-  }
-  return await res.text();
-}
-/**
+ * create a JWT for this device to connect to the WebSocket
  * @returns {string}
  */
 async function authenticateDevice() {
@@ -32,6 +17,9 @@ async function authenticateDevice() {
 }
 
 window.peers = {};
+/**
+ * starts WebSocket and listens for new clients, creates a WebRTC connection for new clients
+ */
 async function initDevice() {
   const token = await authenticateDevice();
   const socket = new WebSocket(
@@ -76,7 +64,26 @@ async function initDevice() {
     });
   });
 }
-
+/**
+ * create a JWT for this client to connect to the WebSocket
+ * @returns {string}
+ */
+async function authenticateClient() {
+  const res = await fetch("http://localhost:4000/client", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: "test", password: "password" }),
+  });
+  if (res.status >= 400) {
+    throw new Error("failed to authenticate");
+  }
+  return await res.text();
+}
+/**
+ * starts WebSocket and signals the device to create a WebRTC connection
+ */
 async function initClient() {
   const token = await authenticateClient();
   const socket = new WebSocket(
@@ -98,12 +105,14 @@ async function initClient() {
       console.log(new TextDecoder().decode(data));
     });
     peer.on("connect", () => {
+      // after we have connected over WebRTC close the client's WebSocket
       socket.close();
     });
   });
 }
 
 async function main() {
+  // add #device to the browser tab's url you want to act as the device
   const isDevice = location.hash.includes("device");
   if (isDevice) {
     await initDevice();
