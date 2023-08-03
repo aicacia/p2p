@@ -15,7 +15,8 @@ defmodule P2pWeb.Endpoint do
   socket "/client", P2pWeb.Client,
     websocket: [
       # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
-      max_frame_size: 1000,
+      # add room for json format
+      max_frame_size: 2000,
       compress: true
     ],
     longpoll: false
@@ -23,7 +24,8 @@ defmodule P2pWeb.Endpoint do
   socket "/device", P2pWeb.Device,
     websocket: [
       # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
-      max_frame_size: 1000,
+      # add room for json format
+      max_frame_size: 2000,
       compress: true
     ],
     longpoll: false
