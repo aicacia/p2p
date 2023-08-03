@@ -1,4 +1,4 @@
-defmodule P2pWeb.Device do
+defmodule P2pWeb.Server do
   require Logger
 
   @behaviour Phoenix.Socket.Transport
@@ -13,12 +13,12 @@ defmodule P2pWeb.Device do
 
   def connect(%{params: %{"token" => token}}) do
     {:ok, claims} = P2pWeb.Token.verify_and_validate(token)
-    device_id = claims["device_id"]
+    server_id = claims["server_id"]
 
-    if P2p.Devices.add(device_id) do
+    if P2p.Servers.add(server_id) do
       {:ok,
        %{
-         device_id: device_id,
+         server_id: server_id,
          uuid: claims["uuid"],
          encrypted_password: claims["encrypted_password"]
        }}
@@ -28,7 +28,7 @@ defmodule P2pWeb.Device do
   end
 
   def init(state) do
-    :ok = P2pWeb.Endpoint.subscribe("device:#{state.device_id}")
+    :ok = P2pWeb.Endpoint.subscribe("server:#{state.server_id}")
     {:ok, state}
   end
 
@@ -36,7 +36,7 @@ defmodule P2pWeb.Device do
     case Phoenix.json_library().decode!(raw_payload) do
       %{"to" => to, "payload" => payload} ->
         P2pWeb.Endpoint.broadcast(
-          "client:#{state.device_id}:#{to}",
+          "client:#{state.server_id}:#{to}",
           "message",
           payload
         )
@@ -44,11 +44,11 @@ defmodule P2pWeb.Device do
         {:ok, state}
 
       %{"password" => password} ->
-        Logger.info("Device password change")
+        Logger.info("Server password change")
 
         P2pWeb.Endpoint.broadcast!(
-          "client:#{state.device_id}",
-          "device",
+          "client:#{state.server_id}",
+          "server",
           %{type: "terminate", reason: "password_change"}
         )
 
@@ -56,7 +56,7 @@ defmodule P2pWeb.Device do
         {:ok, state}
 
       payload ->
-        Logger.debug("Unhandled WebSocket message to Device Socket: #{inspect(payload)}")
+        Logger.debug("Unhandled WebSocket message to Server Socket: #{inspect(payload)}")
         {:ok, state}
     end
 
@@ -71,7 +71,7 @@ defmodule P2pWeb.Device do
         state
       ) do
     P2pWeb.Endpoint.broadcast!(
-      "authenticate:#{state.device_id}:#{from}",
+      "authenticate:#{state.server_id}:#{from}",
       "validate",
       Bcrypt.verify_pass(password, state.encrypted_password)
     )
@@ -106,16 +106,16 @@ defmodule P2pWeb.Device do
   end
 
   def handle_info(message, state) do
-    Logger.debug("Unhandled process message to Device Socket: #{inspect(message)}")
+    Logger.debug("Unhandled process message to Server Socket: #{inspect(message)}")
     {:ok, state}
   end
 
   def terminate(reason, state) do
-    P2p.Devices.delete(state.device_id)
+    P2p.Servers.delete(state.server_id)
 
     P2pWeb.Endpoint.broadcast!(
-      "client:#{state.device_id}",
-      "device",
+      "client:#{state.server_id}",
+      "server",
       %{type: "terminate", reason: reason}
     )
 

@@ -13,17 +13,17 @@ defmodule P2pWeb.Client do
 
   def connect(%{params: %{"token" => token}}) do
     {:ok, claims} = P2pWeb.Token.verify_and_validate(token)
-    {:ok, %{device_id: claims["device_id"], uuid: claims["uuid"]}}
+    {:ok, %{server_id: claims["server_id"], uuid: claims["uuid"]}}
   end
 
   def init(state) do
-    :ok = P2pWeb.Endpoint.subscribe("client:#{state.device_id}")
-    :ok = P2pWeb.Endpoint.subscribe("client:#{state.device_id}:#{state.uuid}")
+    :ok = P2pWeb.Endpoint.subscribe("client:#{state.server_id}")
+    :ok = P2pWeb.Endpoint.subscribe("client:#{state.server_id}:#{state.uuid}")
     {:ok, state}
   end
 
   def handle_in({raw_payload, [opcode: :text]}, state) do
-    P2pWeb.Endpoint.broadcast("device:#{state.device_id}", "message", %{
+    P2pWeb.Endpoint.broadcast("server:#{state.server_id}", "message", %{
       from: state.uuid,
       payload: Phoenix.json_library().decode!(raw_payload)
     })
@@ -43,12 +43,12 @@ defmodule P2pWeb.Client do
 
   def handle_info(
         %Phoenix.Socket.Broadcast{
-          event: "device",
+          event: "server",
           payload: %{type: "terminate", reason: reason}
         },
         state
       ) do
-    Logger.debug("Client received Device terminate reason: #{reason}")
+    Logger.debug("Client received Server terminate reason: #{reason}")
     {:stop, {:shutdown, :left}, state}
   end
 
@@ -58,7 +58,7 @@ defmodule P2pWeb.Client do
   end
 
   def terminate(_reason, state) do
-    P2pWeb.Endpoint.broadcast("device:#{state.device_id}", "message", %{
+    P2pWeb.Endpoint.broadcast("server:#{state.server_id}", "message", %{
       type: "leave",
       from: state.uuid
     })

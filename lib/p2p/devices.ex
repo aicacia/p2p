@@ -1,4 +1,4 @@
-defmodule P2p.Devices do
+defmodule P2p.Servers do
   use GenServer
 
   def start_link(_opts) do

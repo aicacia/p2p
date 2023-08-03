@@ -10,6 +10,6 @@ defmodule P2pWeb.Router do
 
     get "/health", Controller, :health
     post "/client", Controller, :client
-    post "/device", Controller, :device
+    post "/server", Controller, :server
   end
 end

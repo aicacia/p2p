@@ -16,7 +16,7 @@ defmodule P2p.Application do
       P2pWeb.Endpoint,
       # Start a worker by calling: P2p.Worker.start_link(arg)
       # {P2p.Worker, arg}
-      P2p.Devices
+      P2p.Servers
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

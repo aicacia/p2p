@@ -5,17 +5,17 @@ defmodule P2p.IOTFixtures do
   """
 
   @doc """
-  Generate a device.
+  Generate a server.
   """
-  def device_fixture(attrs \\ %{}) do
-    {:ok, device} =
+  def server_fixture(attrs \\ %{}) do
+    {:ok, server} =
       attrs
       |> Enum.into(%{
         id: "7488a646-e31f-11e4-aace-600308960662",
         encrypted_password: "some encrypted_password"
       })
-      |> P2p.IOT.create_device()
+      |> P2p.IOT.create_server()
 
-    device
+    server
   end
 end

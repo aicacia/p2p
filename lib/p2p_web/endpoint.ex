@@ -21,7 +21,7 @@ defmodule P2pWeb.Endpoint do
     ],
     longpoll: false
 
-  socket "/device", P2pWeb.Device,
+  socket "/server", P2pWeb.Server,
     websocket: [
       # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
       # add room for json format

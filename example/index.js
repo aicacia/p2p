@@ -1,9 +1,9 @@
 /**
- * create a JWT for this device to connect to the WebSocket
+ * create a JWT for this server to connect to the WebSocket
  * @returns {string}
  */
-async function authenticateDevice() {
-  const res = await fetch("http://localhost:4000/device", {
+async function authenticateServer() {
+  const res = await fetch("http://localhost:4000/server", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,10 +20,10 @@ window.peers = {};
 /**
  * starts WebSocket and listens for new clients, creates a WebRTC connection for new clients
  */
-async function initDevice() {
-  const token = await authenticateDevice();
+async function initServer() {
+  const token = await authenticateServer();
   window.socket = new WebSocket(
-    `ws://localhost:4000/device/websocket?token=${token}`
+    `ws://localhost:4000/server/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
     socket.addEventListener("message", (event) => {
@@ -43,7 +43,7 @@ async function initDevice() {
             console.log(new TextDecoder().decode(data));
           });
           peer.on("connect", () => {
-            peer.send("Hello from the Device!");
+            peer.send("Hello from the Server!");
           });
           peer.on("disconnect", () => {
             peer.destroy();
@@ -82,7 +82,7 @@ async function authenticateClient() {
   return await res.text();
 }
 /**
- * starts WebSocket and signals the device to create a WebRTC connection
+ * starts WebSocket and signals the server to create a WebRTC connection
  */
 async function initClient() {
   const token = await authenticateClient();
@@ -113,10 +113,10 @@ async function initClient() {
 }
 
 async function main() {
-  // add #device to the browser tab's url you want to act as the device
-  const isDevice = location.hash.includes("device");
-  if (isDevice) {
-    await initDevice();
+  // add #server to the browser tab's url you want to act as the server
+  const isServer = location.hash.includes("server");
+  if (isServer) {
+    await initServer();
   } else {
     await initClient();
   }
