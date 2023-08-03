@@ -6,17 +6,17 @@ replicas:
       utilization: 50
 
 image:
-  repository: registry.gitlab.com/aicacia/p2p
-  tag: 0.1.0
+  repository: aicacia/api-p2p
+  tag: latest
   pullPolicy: Always
   hash: sha256:13ba025b6c186da3fdce3db68f192721fef8300ae02f2ae76c953d771b7180e4
 
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/secure-backends: "true"
+    kubernetes.io/tls-acme: 'true'
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
   hosts:
     - host: p2p.aicacia.com
       paths:

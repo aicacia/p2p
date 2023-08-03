@@ -26,4 +26,5 @@ erl_crash.dump
 p2p-*.tar
 
 # vscode
+/.vscode
 /.elixir_ls

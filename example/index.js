@@ -3,7 +3,7 @@
  * @returns {string}
  */
 async function authenticateServer() {
-  const res = await fetch("http://localhost:4000/server", {
+  const res = await fetch("https://p2p.aicacia.com/server", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +23,7 @@ window.peers = {};
 async function initServer() {
   const token = await authenticateServer();
   window.socket = new WebSocket(
-    `ws://localhost:4000/server/websocket?token=${token}`
+    `wss://p2p.aicacia.com/server/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
     socket.addEventListener("message", (event) => {
@@ -69,7 +69,7 @@ async function initServer() {
  * @returns {string}
  */
 async function authenticateClient() {
-  const res = await fetch("http://localhost:4000/client", {
+  const res = await fetch("https://p2p.aicacia.com/client", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -87,7 +87,7 @@ async function authenticateClient() {
 async function initClient() {
   const token = await authenticateClient();
   window.socket = new WebSocket(
-    `ws://localhost:4000/client/websocket?token=${token}`
+    `wss://p2p.aicacia.com/client/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
     window.peer = new SimplePeer({

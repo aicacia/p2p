@@ -3,4 +3,4 @@ name: p2p
 description: peer to peer
 type: application
 version: 0.1.0
-appVersion: 0.1.0
+appVersion: latest
