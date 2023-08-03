@@ -13,13 +13,18 @@ defmodule P2pWeb.Device do
 
   def connect(%{params: %{"token" => token}}) do
     {:ok, claims} = P2pWeb.Token.verify_and_validate(token)
+    device_id = claims["device_id"]
 
-    {:ok,
-     %{
-       device_id: claims["device_id"],
-       uuid: claims["uuid"],
-       encrypted_password: claims["encrypted_password"]
-     }}
+    if P2p.Devices.add(device_id) do
+      {:ok,
+       %{
+         device_id: device_id,
+         uuid: claims["uuid"],
+         encrypted_password: claims["encrypted_password"]
+       }}
+    else
+      :error
+    end
   end
 
   def init(state) do
@@ -28,13 +33,32 @@ defmodule P2pWeb.Device do
   end
 
   def handle_in({payload, opts}, state) do
-    %{"to" => to, "payload" => payload} = P2pWeb.Socket.JSONSerializer.decode!(payload, opts)
+    case P2pWeb.Socket.JSONSerializer.decode!(payload, opts) do
+      %{"to" => to, "payload" => payload} ->
+        P2pWeb.Endpoint.broadcast(
+          "client:#{state.device_id}:#{to}",
+          "message",
+          payload
+        )
 
-    P2pWeb.Endpoint.broadcast(
-      "client:#{state.device_id}:#{to}",
-      "message",
-      payload
-    )
+        {:ok, state}
+
+      %{"password" => password} ->
+        Logger.info("Device password change")
+
+        P2pWeb.Endpoint.broadcast!(
+          "client:#{state.device_id}",
+          "device",
+          %{type: "terminate", reason: "password_change"}
+        )
+
+        send(self(), {:change_password, Bcrypt.hash_pwd_salt(password)})
+        {:ok, state}
+
+      payload ->
+        Logger.debug("Unhandled WebSocket message to Device Socket: #{inspect(payload)}")
+        {:ok, state}
+    end
 
     {:ok, state}
   end
@@ -77,12 +101,18 @@ defmodule P2pWeb.Device do
     {:reply, :ok, {:text, Phoenix.json_library().encode!(%{type: "leave", from: from})}, state}
   end
 
+  def handle_info({:change_password, encrypted_password}, state) do
+    {:ok, Map.put(state, :encrypted_password, encrypted_password)}
+  end
+
   def handle_info(message, state) do
     Logger.debug("Unhandled process message to Device Socket: #{inspect(message)}")
     {:ok, state}
   end
 
   def terminate(reason, state) do
+    P2p.Devices.delete(state.device_id)
+
     P2pWeb.Endpoint.broadcast!(
       "client:#{state.device_id}",
       "device",

@@ -48,7 +48,7 @@ defmodule P2pWeb.Client do
         },
         state
       ) do
-    Logger.debug("Client received Device terminate, reason: #{reason}")
+    Logger.debug("Client received Device terminate reason: #{reason}")
     {:stop, {:shutdown, :left}, state}
   end
 

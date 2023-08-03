@@ -22,7 +22,7 @@ window.peers = {};
  */
 async function initDevice() {
   const token = await authenticateDevice();
-  const socket = new WebSocket(
+  window.socket = new WebSocket(
     `ws://localhost:4000/device/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
@@ -86,7 +86,7 @@ async function authenticateClient() {
  */
 async function initClient() {
   const token = await authenticateClient();
-  const socket = new WebSocket(
+  window.socket = new WebSocket(
     `ws://localhost:4000/client/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {

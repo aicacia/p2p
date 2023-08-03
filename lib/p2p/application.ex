@@ -13,9 +13,10 @@ defmodule P2p.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: P2p.PubSub},
       # Start the Endpoint (http/https)
-      P2pWeb.Endpoint
+      P2pWeb.Endpoint,
       # Start a worker by calling: P2p.Worker.start_link(arg)
       # {P2p.Worker, arg}
+      P2p.Devices
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
