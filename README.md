@@ -7,12 +7,9 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## Idea
 
-## Learn more
-
-- Official website: https://www.phoenixframework.org/
-- Guides: https://hexdocs.pm/phoenix/overview.html
-- Docs: https://hexdocs.pm/phoenix
-- Forum: https://elixirforum.com/c/phoenix-forum
-- Source: https://github.com/phoenixframework/phoenix
+Devices create a long running websocket from a unique id and a password that listens
+for clients, once a client is authenticated you can send any data between your device and the client
+this socket should be used to create a WebRTC connection between the peers and then this socket should
+be dropped on the clients end, now we have to peers connected peer to peer no middleman. see [Example](example/index.js)
