@@ -43,7 +43,7 @@ async function initDevice() {
             console.log(new TextDecoder().decode(data));
           });
           peer.on("connect", () => {
-            peer.send("Hello");
+            peer.send("Hello from the Device!");
           });
           peer.on("disconnect", () => {
             peer.destroy();
@@ -106,6 +106,7 @@ async function initClient() {
     });
     peer.on("connect", () => {
       // after we have connected over WebRTC close the client's WebSocket
+      peer.send("Hello from a Client!");
       socket.close();
     });
   });

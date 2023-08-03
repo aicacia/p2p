@@ -22,10 +22,10 @@ defmodule P2pWeb.Client do
     {:ok, state}
   end
 
-  def handle_in({payload, opts}, state) do
+  def handle_in({raw_payload, [opcode: :text]}, state) do
     P2pWeb.Endpoint.broadcast("device:#{state.device_id}", "message", %{
       from: state.uuid,
-      payload: P2pWeb.Socket.JSONSerializer.decode!(payload, opts)
+      payload: Phoenix.json_library().decode!(raw_payload)
     })
 
     {:ok, state}

@@ -13,11 +13,19 @@ defmodule P2pWeb.Endpoint do
 
   # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
   socket "/client", P2pWeb.Client,
-    websocket: true,
+    websocket: [
+      # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
+      max_frame_size: 1000,
+      compress: true
+    ],
     longpoll: false
 
   socket "/device", P2pWeb.Device,
-    websocket: true,
+    websocket: [
+      # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
+      max_frame_size: 1000,
+      compress: true
+    ],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

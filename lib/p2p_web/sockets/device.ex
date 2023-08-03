@@ -32,8 +32,8 @@ defmodule P2pWeb.Device do
     {:ok, state}
   end
 
-  def handle_in({payload, opts}, state) do
-    case P2pWeb.Socket.JSONSerializer.decode!(payload, opts) do
+  def handle_in({raw_payload, [opcode: :text]}, state) do
+    case Phoenix.json_library().decode!(raw_payload) do
       %{"to" => to, "payload" => payload} ->
         P2pWeb.Endpoint.broadcast(
           "client:#{state.device_id}:#{to}",
