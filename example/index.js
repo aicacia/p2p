@@ -31,12 +31,12 @@ async function authenticateDevice() {
   return await res.text();
 }
 
+window.peers = {};
 async function initDevice() {
   const token = await authenticateDevice();
   const socket = new WebSocket(
     `ws://localhost:4000/device/websocket?token=${token}`
   );
-  const peers = {};
   socket.addEventListener("open", () => {
     socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
@@ -51,15 +51,20 @@ async function initDevice() {
           peer.on("signal", (data) => {
             socket.send(JSON.stringify({ to: peerId, payload: data }));
           });
+          peer.on("data", (data) => {
+            console.log(new TextDecoder().decode(data));
+          });
           peer.on("connect", () => {
             peer.send("Hello");
+          });
+          peer.on("disconnect", () => {
+            peer.destroy();
+            delete peers[peerId];
           });
           break;
         }
         case "leave": {
-          const peerId = message.from;
-          peers[peerId].destroy();
-          delete peers[peerId];
+          console.log(`leave ${message.from}`);
           break;
         }
         case "message": {
@@ -78,7 +83,7 @@ async function initClient() {
     `ws://localhost:4000/client/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
-    const peer = new SimplePeer({
+    window.peer = new SimplePeer({
       initiator: true,
       trickle: true,
     });
@@ -89,11 +94,11 @@ async function initClient() {
     peer.on("signal", (data) => {
       socket.send(JSON.stringify(data));
     });
-    peer.on("connect", () => {
-      socket.close();
-    });
     peer.on("data", (data) => {
       console.log(new TextDecoder().decode(data));
+    });
+    peer.on("connect", () => {
+      socket.close();
     });
   });
 }

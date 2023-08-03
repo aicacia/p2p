@@ -9,13 +9,12 @@ import Config
 
 # Configures the endpoint
 config :p2p, P2pWeb.Endpoint,
-  url: [host: "localhost"],
+  check_origin: false,
   render_errors: [
     formats: [json: P2pWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: P2p.PubSub,
-  live_view: [signing_salt: "NtxLRDl8"]
+  pubsub_server: P2p.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -34,6 +33,12 @@ config :cors_plug,
 config :joken, default_signer: "secret"
 
 config :bcrypt_elixir, log_rounds: 4
+
+config :peerage,
+  via: Peerage.Via.Self,
+  dns_name: "localhost",
+  app_name: "p2p",
+  log_results: false
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

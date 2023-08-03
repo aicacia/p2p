@@ -8,6 +8,7 @@ defmodule P2pWeb.Router do
   scope "/", P2pWeb do
     pipe_through :api
 
+    get "/health", Controller, :health
     post "/client", Controller, :client
     post "/device", Controller, :device
   end

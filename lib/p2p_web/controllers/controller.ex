@@ -41,4 +41,8 @@ defmodule P2pWeb.Controller do
 
     text(conn, token)
   end
+
+  def health(conn, _params) do
+    json(conn, %{ok: true})
+  end
 end

@@ -32,6 +32,7 @@ defmodule P2p.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:peerage, "~> 1.0"},
       {:bcrypt_elixir, "~> 3.0.1"},
       {:joken, "~> 2.5"},
       {:ecto, "~> 3.10.3"},

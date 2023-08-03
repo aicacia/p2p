@@ -1,0 +1,35 @@
+replicas:
+  min: 1
+  max: 16
+  resource:
+    cpu:
+      utilization: 50
+
+image:
+  repository: registry.gitlab.com/aicacia/p2p
+  tag: 0.1.0
+  pullPolicy: Always
+  hash: sha256:13ba025b6c186da3fdce3db68f192721fef8300ae02f2ae76c953d771b7180e4
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+  hosts:
+    - host: p2p.aicacia.com
+      paths:
+        - /
+  tls:
+    - secretName: p2p-aicacia-com-tls
+      hosts:
+        - p2p.aicacia.com
+
+resources:
+  requests:
+    cpu: 15m
+    memory: 60Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi

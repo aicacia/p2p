@@ -67,13 +67,28 @@ defmodule P2pWeb.Device do
      state}
   end
 
+  def handle_info(
+        %Phoenix.Socket.Broadcast{
+          event: "message",
+          payload: %{type: "leave", from: from}
+        },
+        state
+      ) do
+    {:reply, :ok, {:text, Phoenix.json_library().encode!(%{type: "leave", from: from})}, state}
+  end
+
   def handle_info(message, state) do
-    IO.inspect("Device Unhandled message")
-    IO.inspect(message)
+    Logger.debug("Unhandled process message to Device Socket: #{inspect(message)}")
     {:ok, state}
   end
 
-  def terminate(_reason, _state_socket) do
+  def terminate(reason, state) do
+    P2pWeb.Endpoint.broadcast!(
+      "client:#{state.device_id}",
+      "device",
+      %{type: "terminate", reason: reason}
+    )
+
     :ok
   end
 end

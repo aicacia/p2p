@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aicacia-p2p.fullname" . }}
+  labels:
+    {{- include "aicacia-p2p.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 4000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aicacia-p2p.selectorLabels" . | nindent 4 }}

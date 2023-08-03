@@ -4,7 +4,6 @@ import Config
 # you can enable the server option below.
 config :p2p, P2pWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "3UozhJgicc6ITekdQZTdkuFN9++U8/0MHfF0zfUBXm7HEqRpcdDiisdY7rlAH2gq",
   server: false
 
 # Print only warnings and errors during test

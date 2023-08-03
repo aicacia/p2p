@@ -17,6 +17,7 @@ defmodule P2pWeb.Client do
   end
 
   def init(state) do
+    :ok = P2pWeb.Endpoint.subscribe("client:#{state.device_id}")
     :ok = P2pWeb.Endpoint.subscribe("client:#{state.device_id}:#{state.uuid}")
     {:ok, state}
   end
@@ -40,8 +41,19 @@ defmodule P2pWeb.Client do
     {:reply, :ok, {:text, Phoenix.json_library().encode!(payload)}, state}
   end
 
+  def handle_info(
+        %Phoenix.Socket.Broadcast{
+          event: "device",
+          payload: %{type: "terminate", reason: reason}
+        },
+        state
+      ) do
+    Logger.debug("Client received Device terminate, reason: #{reason}")
+    {:stop, {:shutdown, :left}, state}
+  end
+
   def handle_info(message, state) do
-    Logger.info("Client Unhandled message #{inspect(message)}")
+    Logger.debug("Unhandled process message to Client Socket: #{inspect(message)}")
     {:ok, state}
   end
 
