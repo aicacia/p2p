@@ -21,12 +21,12 @@ defmodule P2pWeb.Controller do
           {:ok, token, _claims} =
             P2pWeb.Token.generate_and_sign(%{device_id: device_id, uuid: uuid})
 
-          text(conn, token)
+          put_status(conn, 201) |> text(token)
         else
           send_resp(conn, 401, "")
         end
     after
-      1_000 ->
+      60_000 ->
         P2pWeb.Endpoint.unsubscribe("authenticate:#{device_id}:#{uuid}")
         send_resp(conn, 500, "")
     end
@@ -43,7 +43,7 @@ defmodule P2pWeb.Controller do
           encrypted_password: Bcrypt.hash_pwd_salt(password)
         })
 
-      text(conn, token)
+      put_status(conn, 201) |> text(token)
     end
   end
 

@@ -30,7 +30,7 @@ config :cors_plug,
   origin: ~r/.*/,
   methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]
 
-config :joken, default_signer: "secret"
+config :joken, default_signer: :crypto.strong_rand_bytes(128) |> Base.url_encode64()
 
 config :bcrypt_elixir, log_rounds: 4
 
