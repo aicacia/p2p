@@ -1,4 +1,5 @@
 defmodule P2pWeb.Controller do
+  alias P2p.Devices
   use P2pWeb, :controller
 
   action_fallback P2pWeb.FallbackController
@@ -32,14 +33,18 @@ defmodule P2pWeb.Controller do
   end
 
   def device(conn, %{"id" => device_id, "password" => password} = _params) do
-    {:ok, token, _claims} =
-      P2pWeb.Token.generate_and_sign(%{
-        device_id: device_id,
-        uuid: UUID.uuid4(),
-        encrypted_password: Bcrypt.hash_pwd_salt(password)
-      })
+    if Devices.has?(device_id) do
+      send_resp(conn, 403, "")
+    else
+      {:ok, token, _claims} =
+        P2pWeb.Token.generate_and_sign(%{
+          device_id: device_id,
+          uuid: UUID.uuid4(),
+          encrypted_password: Bcrypt.hash_pwd_salt(password)
+        })
 
-    text(conn, token)
+      text(conn, token)
+    end
   end
 
   def health(conn, _params) do
