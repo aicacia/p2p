@@ -12,20 +12,22 @@ ENV MIX_ENV=${MIX_ENV}
 COPY mix.exs /app/mix.exs
 COPY mix.lock /app/mix.lock
 
-RUN mix deps.get --only prod
+RUN mix deps.get
 RUN mix deps.compile
 
 COPY . .
 
 RUN mix release
-RUN mix phx.gen.release
 
 FROM elixir:1.14-slim
 
 WORKDIR /app
 
-ENV PHX_SERVER true
+ARG MIX_ENV=prod
 
-COPY --from=builder /app/_build/prod/rel/p2p ./
+ENV PHX_SERVER=true
+ENV MIX_ENV=${MIX_ENV}
+
+COPY --from=builder /app/_build/${MIX_ENV}/rel/p2p ./
 
 CMD ["/app/bin/p2p", "start"]
