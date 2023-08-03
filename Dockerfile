@@ -20,7 +20,7 @@ COPY . .
 RUN mix release
 RUN mix phx.gen.release
 
-FROM elixir:1.14
+FROM elixir:1.14-slim
 
 WORKDIR /app
 
