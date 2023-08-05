@@ -3,12 +3,15 @@
  * @returns {string}
  */
 async function authenticateServer() {
-  const res = await fetch("https://p2p.aicacia.com/server", {
+  const res = await fetch("http://localhost:4000/server", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: "test", password: "password" }),
+    body: JSON.stringify({
+      id: "some-globally-unique-id",
+      password: "password",
+    }),
   });
   if (res.status >= 400) {
     throw new Error("failed to authenticate");
@@ -23,7 +26,7 @@ window.peers = {};
 async function initServer() {
   const token = await authenticateServer();
   window.socket = new WebSocket(
-    `wss://p2p.aicacia.com/server/websocket?token=${token}`
+    `ws://localhost:4000/server/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
     socket.addEventListener("message", (event) => {
@@ -69,12 +72,15 @@ async function initServer() {
  * @returns {string}
  */
 async function authenticateClient() {
-  const res = await fetch("https://p2p.aicacia.com/client", {
+  const res = await fetch("http://localhost:4000/client", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: "test", password: "password" }),
+    body: JSON.stringify({
+      id: "some-globally-unique-id",
+      password: "password",
+    }),
   });
   if (res.status >= 400) {
     throw new Error("failed to authenticate");
@@ -87,7 +93,7 @@ async function authenticateClient() {
 async function initClient() {
   const token = await authenticateClient();
   window.socket = new WebSocket(
-    `wss://p2p.aicacia.com/client/websocket?token=${token}`
+    `ws://localhost:4000/client/websocket?token=${token}`
   );
   socket.addEventListener("open", () => {
     window.peer = new SimplePeer({
@@ -112,7 +118,7 @@ async function initClient() {
   });
 }
 
-async function main() {
+async function onLoad() {
   // add #server to the browser tab's url you want to act as the server
   const isServer = location.hash.includes("server");
   if (isServer) {
@@ -122,4 +128,8 @@ async function main() {
   }
 }
 
-main();
+if (document.readyState === "complete") {
+  onLoad();
+} else {
+  window.addEventListener("load", onLoad);
+}

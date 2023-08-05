@@ -2,6 +2,8 @@ defmodule P2pWeb.Controller do
   alias P2p.Servers
   use P2pWeb, :controller
 
+  require Logger
+
   action_fallback P2pWeb.FallbackController
 
   def client(conn, %{"id" => server_id, "password" => password} = _params) do
@@ -33,16 +35,20 @@ defmodule P2pWeb.Controller do
   end
 
   def server(conn, %{"id" => server_id, "password" => password} = _params) do
-    if Servers.has?(server_id) do
+    encrypted_password = Bcrypt.hash_pwd_salt(password)
+    uuid = P2p.Servers.uuid(server_id, encrypted_password)
+
+    if Servers.has?(uuid) do
       send_resp(conn, 403, "")
     else
       {:ok, token, _claims} =
         P2pWeb.Token.generate_and_sign(%{
           server_id: server_id,
-          uuid: UUID.uuid4(),
-          encrypted_password: Bcrypt.hash_pwd_salt(password)
+          uuid: uuid,
+          encrypted_password: encrypted_password
         })
 
+      Logger.info("New Server #{uuid}")
       put_status(conn, 201) |> text(token)
     end
   end

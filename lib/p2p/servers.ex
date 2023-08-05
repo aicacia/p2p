@@ -1,6 +1,13 @@
 defmodule P2p.Servers do
   use GenServer
 
+  def uuid(server_id, encrypted_password),
+    do:
+      UUID.uuid5(
+        nil,
+        :crypto.hash(:sha256, server_id) <> :crypto.hash(:sha256, encrypted_password)
+      )
+
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end

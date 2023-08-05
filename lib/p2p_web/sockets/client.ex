@@ -19,6 +19,11 @@ defmodule P2pWeb.Client do
   def init(state) do
     :ok = P2pWeb.Endpoint.subscribe("client:#{state.server_id}")
     :ok = P2pWeb.Endpoint.subscribe("client:#{state.server_id}:#{state.uuid}")
+
+    P2pWeb.Endpoint.broadcast!("server:#{state.server_id}", "join", %{
+      from: state.uuid
+    })
+
     {:ok, state}
   end
 
