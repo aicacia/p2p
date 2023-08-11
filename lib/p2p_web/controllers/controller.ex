@@ -28,7 +28,7 @@ defmodule P2pWeb.Controller do
           send_resp(conn, 401, "")
         end
     after
-      60_000 ->
+      5_000 ->
         P2pWeb.Endpoint.unsubscribe("authenticate:#{server_id}:#{uuid}")
         send_resp(conn, 500, "")
     end

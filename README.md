@@ -16,5 +16,7 @@ be dropped on the clients end, now we have to peers connected peer to peer no mi
 
 ## Helm
 
+- `docker build -t aicacia/api-p2p:latest .`
+- `docker push aicacia/api-p2p:latest`
 - `helm upgrade p2p helm/p2p -n api --install --set image.hash="$(docker inspect --format='{{index .Id}}' aicacia/api-p2p:latest)"`
 - `helm delete -n api p2p`
