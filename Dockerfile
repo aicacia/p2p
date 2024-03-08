@@ -1,4 +1,4 @@
-FROM elixir:1.14 as builder
+FROM elixir:1.16 as builder
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ COPY . .
 
 RUN mix release
 
-FROM elixir:1.14-slim
+FROM erlang:26-slim
 
 WORKDIR /app
 
