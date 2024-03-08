@@ -33,16 +33,15 @@ defmodule P2p.MixProject do
   defp deps do
     [
       {:peerage, "~> 1.0"},
-      {:bcrypt_elixir, "~> 3.0.1"},
-      {:joken, "~> 2.5"},
-      {:ecto, "~> 3.10.3"},
+      {:bcrypt_elixir, "~> 3.1"},
+      {:joken, "~> 2.6"},
       {:uuid, "~> 1.1"},
       {:cors_plug, "~> 3.0"},
-      {:phoenix, "~> 1.7.7"},
+      {:phoenix, "~> 1.7"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:jason, "~> 1.4"},
+      {:plug_cowboy, "~> 2.7"}
     ]
   end
 

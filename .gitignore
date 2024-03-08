@@ -28,3 +28,7 @@ p2p-*.tar
 # vscode
 /.vscode
 /.elixir_ls
+
+# parcel
+/dist
+/.parcel-cache
