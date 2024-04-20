@@ -16,7 +16,7 @@ defmodule P2pWeb.Endpoint do
     websocket: [
       # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
       # add room for json format
-      max_frame_size: 2000,
+      max_frame_size: 4096,
       compress: true
     ],
     longpoll: false
@@ -25,7 +25,7 @@ defmodule P2pWeb.Endpoint do
     websocket: [
       # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
       # add room for json format
-      max_frame_size: 2000,
+      max_frame_size: 4096,
       compress: true
     ],
     longpoll: false
