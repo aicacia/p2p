@@ -38,8 +38,8 @@ defmodule P2p.MixProject do
       {:uuid, "~> 1.1"},
       {:cors_plug, "~> 3.0"},
       {:phoenix, "~> 1.7"},
-      {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 1.0"},
+      {:telemetry_metrics, "~> 1.0"},
+      {:telemetry_poller, "~> 1.1"},
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.7"}
     ]
