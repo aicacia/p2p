@@ -37,8 +37,7 @@ defmodule P2pWeb.Endpoint do
   # plug Plug.Static,
   #   at: "/",
   #   from: :p2p,
-  #   gzip: false,
-  #   only: P2pWeb.static_paths()
+  #   gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -56,7 +55,6 @@ defmodule P2pWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
-  # plug Plug.Session, @session_options
   plug CORSPlug
   plug P2pWeb.Router
 end

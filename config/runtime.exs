@@ -1,4 +1,5 @@
 import Config
+import Dotenvy
 
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
@@ -6,6 +7,8 @@ import Config
 # and secrets from environment variables or elsewhere. Do not define
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
+
+source([System.get_env(), ".env", ".env.#{config_env()}"])
 
 # ## Using releases
 #
@@ -19,6 +22,9 @@ import Config
 if System.get_env("PHX_SERVER") do
   config :p2p, P2pWeb.Endpoint, server: true
 end
+
+config :joken,
+  default_signer: env!("JWT_SECRET", :string)
 
 if config_env() == :prod do
   config :p2p, P2pWeb.Endpoint,

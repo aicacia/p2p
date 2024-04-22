@@ -12,18 +12,22 @@ defmodule P2pWeb.Server do
   end
 
   def connect(%{params: %{"token" => token}}) do
-    {:ok, claims} = P2pWeb.Token.verify_and_validate(token)
-    uuid = claims["uuid"]
-
-    if P2p.Servers.add(uuid) do
+    case P2pWeb.Token.verify_and_validate(token) do
       {:ok,
-       %{
-         server_id: claims["server_id"],
-         uuid: uuid,
-         encrypted_password: claims["encrypted_password"]
-       }}
-    else
-      :error
+       %{"server_id" => server_id, "uuid" => uuid, "encrypted_password" => encrypted_password}} ->
+        if P2p.Servers.add(uuid) do
+          {:ok,
+           %{
+             server_id: server_id,
+             uuid: uuid,
+             encrypted_password: encrypted_password
+           }}
+        else
+          :error
+        end
+
+      _otherwise ->
+        :error
     end
   end
 
@@ -71,12 +75,10 @@ defmodule P2pWeb.Server do
         },
         state
       ) do
-    valid = Bcrypt.verify_pass(password, state.encrypted_password)
-
     P2pWeb.Endpoint.broadcast!(
       "authenticate:#{state.server_id}:#{from}",
       "validate",
-      valid
+      Bcrypt.verify_pass(password, state.encrypted_password)
     )
 
     {:ok, state}

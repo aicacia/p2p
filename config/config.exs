@@ -24,13 +24,25 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :p2p, generators: [binary_id: true]
-
 config :cors_plug,
-  origin: ~r/.*/,
-  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"]
-
-config :joken, default_signer: :crypto.strong_rand_bytes(128) |> Base.url_encode64()
+  origin: &P2pWeb.Plug.origin/1,
+  credentials: true,
+  headers: [
+    "Authorization",
+    "Content-Type",
+    "Accept",
+    "Origin",
+    "User-Agent",
+    "DNT",
+    "Cache-Control",
+    "X-Mx-ReqToken",
+    "Keep-Alive",
+    "X-Requested-With",
+    "If-Modified-Since",
+    "X-CSRF-Token"
+  ],
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  send_preflight_response?: true
 
 config :bcrypt_elixir, log_rounds: 4
 

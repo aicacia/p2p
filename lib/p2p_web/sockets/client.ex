@@ -12,8 +12,13 @@ defmodule P2pWeb.Client do
   end
 
   def connect(%{params: %{"token" => token}}) do
-    {:ok, claims} = P2pWeb.Token.verify_and_validate(token)
-    {:ok, %{server_id: claims["server_id"], uuid: claims["uuid"]}}
+    case P2pWeb.Token.verify_and_validate(token) do
+      {:ok, %{"server_id" => server_id, "uuid" => uuid}} ->
+        {:ok, %{server_id: server_id, uuid: uuid}}
+
+      _otherwise ->
+        :error
+    end
   end
 
   def init(state) do

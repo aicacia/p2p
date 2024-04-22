@@ -17,8 +17,6 @@ defmodule P2pWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
-
   def router do
     quote do
       use Phoenix.Router, helpers: false
@@ -38,8 +36,7 @@ defmodule P2pWeb do
   def controller do
     quote do
       use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: P2pWeb.Layouts]
+        formats: [:json]
 
       import Plug.Conn
 
@@ -51,8 +48,7 @@ defmodule P2pWeb do
     quote do
       use Phoenix.VerifiedRoutes,
         endpoint: P2pWeb.Endpoint,
-        router: P2pWeb.Router,
-        statics: P2pWeb.static_paths()
+        router: P2pWeb.Router
     end
   end
 

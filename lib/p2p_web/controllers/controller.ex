@@ -1,5 +1,4 @@
 defmodule P2pWeb.Controller do
-  alias P2p.Servers
   use P2pWeb, :controller
 
   require Logger
@@ -34,11 +33,12 @@ defmodule P2pWeb.Controller do
     end
   end
 
-  def server(conn, %{"id" => server_id, "password" => password} = _params) do
+  def server(conn, %{"password" => password} = _params) do
+    server_id = conn.assigns.server_id
     encrypted_password = Bcrypt.hash_pwd_salt(password)
     uuid = P2p.Servers.uuid(server_id, encrypted_password)
 
-    if Servers.has?(uuid) do
+    if P2p.Servers.has?(uuid) do
       send_resp(conn, 403, "")
     else
       {:ok, token, _claims} =

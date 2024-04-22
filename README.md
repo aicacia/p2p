@@ -14,6 +14,20 @@ for clients, once a client is authenticated you can send any data between your s
 this socket should be used to create a WebRTC connection between the peers and then this socket should
 be dropped on the clients end, now we have two peers connected peer to peer no middleman. see [Example](example/index.js)
 
+## [JWT](http://jwtbuilder.jamiekurtz.com/)
+
+in order for servers to create a socket they need a JWT signed with your `JWT_SECRET` and claims
+
+```
+{
+    "iss": "P2P",
+    "iat": 1713779629,
+    "exp": 1713879629,
+    "aud": "P2P",
+    "sub": "some-unique-id" // used when clients trys to connect `server_id`
+}
+```
+
 ## Helm
 
 - `docker build -t aicacia/api-p2p:latest .`

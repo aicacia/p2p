@@ -41,7 +41,8 @@ defmodule P2p.MixProject do
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.1"},
       {:jason, "~> 1.4"},
-      {:plug_cowboy, "~> 2.7"}
+      {:plug_cowboy, "~> 2.7"},
+      {:dotenvy, "~> 0.8"}
     ]
   end
 
