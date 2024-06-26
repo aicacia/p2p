@@ -7,6 +7,8 @@ async function authenticateServer() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization:
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJQMlAiLCJpYXQiOjE3MTk0NDI3NDQsImV4cCI6bnVsbCwiYXVkIjoiUDJQIiwic3ViIjoic29tZS1nbG9iYWxseS11bmlxdWUtaWQifQ.s9YPld1ES38LYDNUOZFIfZ_Vcuz8I-H4OKIjEEJ9ago",
     },
     body: JSON.stringify({
       id: "some-globally-unique-id",
@@ -34,6 +36,8 @@ async function initServer() {
       switch (message.type) {
         case "join": {
           const peerId = message.from;
+          const payload = message.payload;
+          console.log("new peer " + peerId, payload);
           const peer = (peers[peerId] = new SimplePeer({
             initiator: false,
             trickle: true,
@@ -93,7 +97,9 @@ async function authenticateClient() {
 async function initClient() {
   const token = await authenticateClient();
   window.socket = new WebSocket(
-    `ws://localhost:4000/client/websocket?token=${token}`
+    `ws://localhost:4000/client/websocket?token=${token}&payload=${encodeURIComponent(
+      JSON.stringify({ name: "test" })
+    )}`
   );
   socket.addEventListener("open", () => {
     window.peer = new SimplePeer({

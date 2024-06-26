@@ -87,11 +87,13 @@ defmodule P2pWeb.Server do
   def handle_info(
         %Phoenix.Socket.Broadcast{
           event: "join",
-          payload: %{from: from}
+          payload: %{from: from, payload: payload}
         },
         state
       ) do
-    {:reply, :ok, {:text, Phoenix.json_library().encode!(%{type: "join", from: from})}, state}
+    {:reply, :ok,
+     {:text, Phoenix.json_library().encode!(%{type: "join", from: from, payload: payload})},
+     state}
   end
 
   def handle_info(

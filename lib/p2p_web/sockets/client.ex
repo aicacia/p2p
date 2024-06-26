@@ -11,10 +11,19 @@ defmodule P2pWeb.Client do
     :ignore
   end
 
-  def connect(%{params: %{"token" => token}}) do
+  def connect(%{params: %{"token" => token} = params}) do
     case P2pWeb.Token.verify_and_validate(token) do
       {:ok, %{"server_id" => server_id, "uuid" => uuid}} ->
-        {:ok, %{server_id: server_id, uuid: uuid}}
+        state =
+          if Map.has_key?(params, "payload"),
+            do: %{
+              server_id: server_id,
+              uuid: uuid,
+              payload: Phoenix.json_library().decode!(params["payload"])
+            },
+            else: %{server_id: server_id, uuid: uuid}
+
+        {:ok, state}
 
       _otherwise ->
         :error
@@ -26,10 +35,11 @@ defmodule P2pWeb.Client do
     :ok = P2pWeb.Endpoint.subscribe("client:#{state.server_id}:#{state.uuid}")
 
     P2pWeb.Endpoint.broadcast!("server:#{state.server_id}", "join", %{
-      from: state.uuid
+      from: state.uuid,
+      payload: Map.get(state, :payload)
     })
 
-    {:ok, state}
+    {:ok, Map.delete(state, :payload)}
   end
 
   def handle_in({raw_payload, [opcode: :text]}, state) do
