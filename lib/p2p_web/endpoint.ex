@@ -14,18 +14,14 @@ defmodule P2pWeb.Endpoint do
   # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
   socket "/client", P2pWeb.Client,
     websocket: [
-      # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
-      # add room for json format
-      max_frame_size: 4096,
+      max_frame_size: 8192,
       compress: true
     ],
     longpoll: false
 
   socket "/server", P2pWeb.Server,
     websocket: [
-      # 1 Kbyte https://www.ietf.org/rfc/rfc2327.txt
-      # add room for json format
-      max_frame_size: 4096,
+      max_frame_size: 8192,
       compress: true
     ],
     longpoll: false
