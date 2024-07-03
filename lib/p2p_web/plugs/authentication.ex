@@ -1,6 +1,8 @@
 defmodule P2pWeb.Authentication do
   use P2pWeb, :controller
 
+  require Logger
+
   @bearer "Bearer "
   @bearer_length String.length(@bearer)
 
@@ -13,11 +15,11 @@ defmodule P2pWeb.Authentication do
     authorize_connection(conn, authorization)
   end
 
-  defp authorize_connection(conn, nil),
-    do:
-      conn
-      |> send_resp(401, "")
-      |> halt()
+  defp authorize_connection(conn, nil) do
+    conn
+    |> send_resp(401, "")
+    |> halt()
+  end
 
   defp authorize_connection(conn, authorization) do
     token = String.slice(authorization, @bearer_length..-1//1)
