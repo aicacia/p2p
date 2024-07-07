@@ -27,15 +27,32 @@ config :joken,
   default_signer: env!("JWT_SECRET", :string)
 
 if config_env() == :prod do
-  config :p2p, P2pWeb.Endpoint,
-    http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
-      # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0},
-      port: 4000
-    ]
+  if System.get_env("SSL_KEY_PATH") && System.get_env("SSL_CERT_PATH") do
+    config :p2p, P2pWeb.Endpoint,
+      force_ssl: [hsts: true],
+      https: [
+        # Enable IPv6 and bind on all interfaces.
+        # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
+        # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
+        # for details about using IPv6 vs IPv4 and loopback vs public addresses.
+        ip: {0, 0, 0, 0},
+        port: System.get_env("PORT", "443"),
+        cipher_suite: :strong,
+        otp_app: :p2p,
+        keyfile: System.get_env("SSL_KEY_PATH"),
+        certfile: System.get_env("SSL_CERT_PATH")
+      ]
+  else
+    config :p2p, P2pWeb.Endpoint,
+      http: [
+        # Enable IPv6 and bind on all interfaces.
+        # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
+        # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
+        # for details about using IPv6 vs IPv4 and loopback vs public addresses.
+        ip: {0, 0, 0, 0},
+        port: System.get_env("PORT", "80")
+      ]
+  end
 
   # ## SSL Support
   #
