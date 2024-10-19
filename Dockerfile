@@ -1,4 +1,4 @@
-FROM elixir:1.16-alpine as builder
+FROM elixir:1.17-alpine as builder
 
 RUN apk add build-base
 
@@ -21,7 +21,7 @@ COPY . .
 
 RUN mix release
 
-FROM erlang:26-alpine
+FROM erlang:27-alpine
 
 WORKDIR /app
 
