@@ -3,12 +3,12 @@ entries:
   p2p:
   - apiVersion: v2
     appVersion: latest
-    created: "2024-12-24T14:11:34.948067174Z"
+    created: "2024-12-25T10:12:25.282507774Z"
     description: peer to peer
-    digest: 2786133321d0ed9685422cce6fd162c644af8c9ab99aa07da92ab2176a5bd97b
+    digest: e960fbc7f17e09a5889ce50ac9ed8a988f237c83bca14e3487e00c769e619df0
     name: p2p
     type: application
     urls:
     - p2p-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-24T14:11:34.946744164Z"
+generated: "2024-12-25T10:12:25.28208009Z"
