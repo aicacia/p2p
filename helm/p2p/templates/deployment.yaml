@@ -24,6 +24,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "p2p.fullname" . }}-environment
+            {{- if .Values.envSecret }}
+            - secretRef:
+                name: {{ .Values.envSecret }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 80
