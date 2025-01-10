@@ -10,6 +10,7 @@ import Config
 # Configures the endpoint
 config :p2p, P2pWeb.Endpoint,
   check_origin: false,
+  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [json: P2pWeb.ErrorJSON],
     layout: false
